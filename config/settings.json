@@ -3,5 +3,6 @@
   "fur": "White",
   "avatar_visible": true,
   "startup": false,
-  "apps": {}
+  "apps": {},
+  "floating_miya_enabled": true
 }

@@ -7,10 +7,10 @@ from PyQt6.QtCore import Qt, QSize, pyqtSignal, QPropertyAnimation, QRect
 from PyQt6.QtGui import QMovie, QFont, QColor
 from core.startup import toggle_startup
 from core.theme import toggle_theme
-from core.avatar_toggle import toggle_avatar
+from core.avatar_toggle import toggle_avatar , load_settings
 from core.demonMode import toggle_demon_mode
 from core.fur import switch_fur
-from core.page_switch import switch_to_app_manager, switch_to_main
+from core.page_switch import switch_to_main, create_app_manager_page
 from core.mic_handler import activate_miya_listener
 import keyboard
 
@@ -66,7 +66,11 @@ class MainWindow(QWidget):
         self.toggle_labels = []
         self.stack = QStackedLayout()
         self.init_main_page()
-        self.init_app_manager_page()
+        # self.init_app_manager_page()
+        app_manager_page = create_app_manager_page(self.stack)
+        self.stack.addWidget(app_manager_page)
+        # app_manager_page = create_app_manager_page(self.stack)
+        # self.stack.addWidget(app_manager_page)
 
         wrapper_layout = QVBoxLayout(self)
         wrapper_layout.setContentsMargins(0, 0, 0, 0)
@@ -209,10 +213,18 @@ class MainWindow(QWidget):
         button_layout.addWidget(hotkey_hint)
 
         _, theme_widget = self.build_toggle_row("Switch Theme", False, toggle_theme)
-        _, avatar_widget = self.build_toggle_row("Show Floating Miya", True, toggle_avatar)
+        avatar_toggle , avatar_widget = self.build_toggle_row("Show Miya", True, toggle_avatar)
         _, startup_widget = self.build_toggle_row("Run at Startup", False, toggle_startup)
         _, neon_widget = self.build_toggle_row("Enable Neon Glow", True, self.toggle_neon)
         _, demon_widget = self.build_toggle_row("Override Mode", False, toggle_demon_mode, red=True)
+
+        self.settings = load_settings()
+        avatar_enabled = self.settings.get("floating_miya_enabled", True)
+        avatar_toggle.blockSignals(True)
+        avatar_toggle.setChecked(avatar_enabled)
+        avatar_toggle.animate_toggle()
+        avatar_toggle.blockSignals(False)  
+        toggle_avatar(avatar_enabled)
 
         demon_warning = QLabel("⚠️ Miya Desktop blocks critical paths by default.\nEnable this to override restricted paths, including system folders and protected apps. This action requires administrator privileges")
         demon_warning.setWordWrap(True)
@@ -220,7 +232,7 @@ class MainWindow(QWidget):
 
         self.app_btn = QPushButton("Add Application")
         self.app_btn.setFixedSize(300, 40)
-        self.app_btn.clicked.connect(lambda: switch_to_app_manager(self.stack))
+        self.app_btn.clicked.connect(lambda: self.stack.setCurrentIndex(1))
 
         font_row = QHBoxLayout()
         font_size_label = QLabel("Font Size:")
@@ -319,24 +331,24 @@ class MainWindow(QWidget):
         self.stack.addWidget(page)
         self.update_neon_styles()
 
-    def init_app_manager_page(self):
-        page = QWidget()
-        layout = QVBoxLayout()
-        label = QLabel("App Manager (Placeholder)")
-        back_btn = QPushButton("⬅ Back")
-        back_btn.clicked.connect(lambda: switch_to_main(self.stack))
+    # def init_app_manager_page(self):
+    #     page = QWidget()
+    #     layout = QVBoxLayout()
+    #     label = QLabel("App Manager (Placeholder)")
+    #     # back_btn = QPushButton("⬅ Back")
+    #     # back_btn.clicked.connect(lambda: switch_to_main(self.stack))
 
-        layout.addWidget(label)
-        layout.addWidget(back_btn)
-        layout.addStretch()
-        page.setLayout(layout)
+    #     layout.addWidget(label)
+    #     # layout.addWidget(back_btn)
+    #     layout.addStretch()
+    #     page.setLayout(layout)
 
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(page)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+    #     scroll_area = QScrollArea()
+    #     scroll_area.setWidgetResizable(True)
+    #     scroll_area.setWidget(page)
+    #     scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
 
-        self.stack.addWidget(scroll_area)
+    #     self.stack.addWidget(scroll_area)
 
     def toggle_neon(self, checked):
         self.neon_enabled = checked
