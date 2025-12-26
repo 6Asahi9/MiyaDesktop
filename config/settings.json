@@ -1,8 +1,8 @@
 {
-  "theme": "dark",
-  "fur": "White",
-  "avatar_visible": true,
-  "startup": false,
-  "apps": {},
-  "floating_miya_enabled": true
+    "theme": "dark",
+    "fur": "White",
+    "avatar_visible": true,
+    "startup": false,
+    "apps": {},
+    "floating_miya_enabled": true
 }

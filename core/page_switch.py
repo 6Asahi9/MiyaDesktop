@@ -4,20 +4,18 @@ from PyQt6.QtWidgets import (
 )
 from pathlib import Path
 import json
-
-# Path to settings
-SETTINGS_PATH = Path("config/settings.json")
+from core.path import SETTINGS_JSON
 
 # ----------------- JSON helpers -----------------
 def load_settings():
-    if SETTINGS_PATH.exists():
-        with open(SETTINGS_PATH, "r") as f:
+    if SETTINGS_JSON.exists():
+        with open(SETTINGS_JSON, "r") as f:
             return json.load(f)
     return {}
 
 def save_settings(settings):
-    SETTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(SETTINGS_PATH, "w") as f:
+    SETTINGS_JSON.parent.mkdir(parents=True, exist_ok=True)
+    with open(SETTINGS_JSON, "w") as f:
         json.dump(settings, f, indent=4)
 
 # ----------------- App Manager page -----------------
@@ -77,3 +75,5 @@ def switch_to_app_manager(stack):
 def switch_to_main(stack):
     print("Returning to Main Page")
     stack.setCurrentIndex(0)
+
+# -------------------------------------------------------------------------------------------------------------

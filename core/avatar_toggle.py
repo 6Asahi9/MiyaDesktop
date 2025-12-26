@@ -4,17 +4,19 @@ from PyQt6.QtWidgets import QWidget, QLabel, QApplication
 from PyQt6.QtCore import Qt, QSize, QPoint
 from PyQt6.QtGui import QMovie
 
-SETTINGS_PATH = Path("config/settings.json")
-
+from core.path import SETTINGS_JSON, ASSETS_PATH
 
 class FloatingMiya(QWidget):
-    def __init__(self, gif_path="assets/placeholder_miya.gif"):
+    def __init__(self, gif_path=None):
         super().__init__(
             None,
             Qt.WindowType.FramelessWindowHint |
             Qt.WindowType.WindowStaysOnTopHint |
             Qt.WindowType.Tool
         )
+        if gif_path is None:
+            gif_path = ASSETS_PATH / "placeholder_miya.gif"
+        self.movie = QMovie(str(gif_path))
 
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setFixedSize(200, 150)
@@ -23,14 +25,14 @@ class FloatingMiya(QWidget):
         self.label.setFixedSize(self.size())
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.movie = QMovie(gif_path)
+        # self.movie = QMovie(gif_path)
         self.movie.setScaledSize(self.size())
         self.label.setMovie(self.movie)
         self.movie.start()
 
         self._drag_offset: QPoint | None = None
 
-    # ---- Drag handling (global-position based, robust) ----
+    # ---- Drag handling ----
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -63,22 +65,19 @@ class FloatingMiya(QWidget):
 
 
 # ---------- Settings helpers ----------
-
 def load_settings():
-    if SETTINGS_PATH.exists():
+    if SETTINGS_JSON.exists():
         try:
-            with open(SETTINGS_PATH, "r", encoding="utf-8") as f:
+            with open(SETTINGS_JSON, "r", encoding="utf-8") as f:
                 return json.load(f)
         except json.JSONDecodeError:
             return {}
     return {}
 
-
 def save_settings(settings: dict):
-    SETTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(SETTINGS_PATH, "w", encoding="utf-8") as f:
+    SETTINGS_JSON.parent.mkdir(parents=True, exist_ok=True)
+    with open(SETTINGS_JSON, "w", encoding="utf-8") as f:
         json.dump(settings, f, indent=4)
-
 
 # ---------- Toggle logic ----------
 

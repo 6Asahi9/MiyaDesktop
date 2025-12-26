@@ -13,7 +13,6 @@ from core.fur import switch_fur
 from core.page_switch import switch_to_main, create_app_manager_page
 from core.mic_handler import activate_miya_listener
 import keyboard
-from core.path import ASSETS_PATH, MIYA
 
 class ToggleAnimation(QPushButton):
     toggled = pyqtSignal(bool)
@@ -67,9 +66,11 @@ class MainWindow(QWidget):
         self.toggle_labels = []
         self.stack = QStackedLayout()
         self.init_main_page()
-
+        # self.init_app_manager_page()
         app_manager_page = create_app_manager_page(self.stack)
         self.stack.addWidget(app_manager_page)
+        # app_manager_page = create_app_manager_page(self.stack)
+        # self.stack.addWidget(app_manager_page)
 
         wrapper_layout = QVBoxLayout(self)
         wrapper_layout.setContentsMargins(0, 0, 0, 0)
@@ -282,8 +283,7 @@ class MainWindow(QWidget):
         miya_layout = QVBoxLayout()
 
         miya_image = QLabel()
-        # movie = QMovie("assets/placeholder_miya.gif")
-        movie = QMovie(str(MIYA))
+        movie = QMovie("assets/placeholder_miya.gif")
         movie.setScaledSize(QSize(200, 150))
         miya_image.setMovie(movie)
         movie.start()
@@ -330,6 +330,25 @@ class MainWindow(QWidget):
 
         self.stack.addWidget(page)
         self.update_neon_styles()
+
+    # def init_app_manager_page(self):
+    #     page = QWidget()
+    #     layout = QVBoxLayout()
+    #     label = QLabel("App Manager (Placeholder)")
+    #     # back_btn = QPushButton("⬅ Back")
+    #     # back_btn.clicked.connect(lambda: switch_to_main(self.stack))
+
+    #     layout.addWidget(label)
+    #     # layout.addWidget(back_btn)
+    #     layout.addStretch()
+    #     page.setLayout(layout)
+
+    #     scroll_area = QScrollArea()
+    #     scroll_area.setWidgetResizable(True)
+    #     scroll_area.setWidget(page)
+    #     scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+
+    #     self.stack.addWidget(scroll_area)
 
     def toggle_neon(self, checked):
         self.neon_enabled = checked
