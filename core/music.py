@@ -9,6 +9,8 @@ from PyQt6.QtCore import Qt, QSize, QUrl
 from PyQt6.QtMultimedia import QMediaPlayer, QAudioOutput
 from core.path import MUSIC_PATH, PLAYER_PATH, SETTINGS_JSON
 from core.music_picker import MusicPickerDialog 
+from random import choice
+from PyQt6.QtGui import QKeySequence, QShortcut
 
 # JSON helpers
 def load_settings():
@@ -114,6 +116,101 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     layout.addWidget(play_btn)
     layout.addWidget(volume_slider)
     layout.addWidget(dots_btn)
+
+# ------------------------------------------------------------------------------------
+    playback_mode = "repeat" 
+    # Mode buttons
+    from PyQt6.QtWidgets import QHBoxLayout
+
+    mode_layout = QHBoxLayout()
+    repeat_btn = QPushButton("Repeat")
+    juggle_btn = QPushButton("Juggle")
+    straight_btn = QPushButton("Straight")
+
+    # Style buttons
+    for btn in (repeat_btn, juggle_btn, straight_btn):
+        style_neon_button(btn)
+        btn.setFixedWidth(80)
+
+    mode_layout.addWidget(repeat_btn)
+    mode_layout.addWidget(juggle_btn)
+    mode_layout.addWidget(straight_btn)
+    layout.addLayout(mode_layout)
+
+    # Function to highlight active mode
+    def update_mode_buttons():
+        repeat_btn.setStyleSheet(repeat_btn.styleSheet() + ("border: 2px solid #ffff00;" if playback_mode=="repeat" else ""))
+        juggle_btn.setStyleSheet(juggle_btn.styleSheet() + ("border: 2px solid #ffff00;" if playback_mode=="juggle" else ""))
+        straight_btn.setStyleSheet(straight_btn.styleSheet() + ("border: 2px solid #ffff00;" if playback_mode=="straight" else ""))
+
+    update_mode_buttons()
+
+    # Button click callbacks
+    def set_repeat():
+        nonlocal playback_mode
+        playback_mode = "repeat"
+        print("clicked repeat")
+        update_mode_buttons()
+
+    def set_juggle():
+        nonlocal playback_mode
+        playback_mode = "juggle"
+        print("clicked juggle")
+        update_mode_buttons()
+
+    def set_straight():
+        nonlocal playback_mode
+        playback_mode = "straight"
+        print("clicked straight")
+        update_mode_buttons()
+
+    repeat_btn.clicked.connect(set_repeat)
+    juggle_btn.clicked.connect(set_juggle)
+    straight_btn.clicked.connect(set_straight)
+
+    # Playback end logic ---
+    def handle_song_finished():
+        nonlocal playback_mode
+        last_music_name = settings.get("last_music")
+        if not last_music_name:
+            return
+        music_files = sorted(f.name for f in MUSIC_PATH.iterdir() if f.is_file())
+        if playback_mode == "repeat":
+            player.setSource(QUrl.fromLocalFile(str(MUSIC_PATH / last_music_name)))
+            player.play()
+            movie.start()
+        elif playback_mode == "juggle":
+            next_song = choice(music_files)
+            settings["last_music"] = next_song
+            save_settings(settings)
+            now_playing.setText(next_song)
+            player.setSource(QUrl.fromLocalFile(str(MUSIC_PATH / next_song)))
+            player.play()
+            movie.start()
+        elif playback_mode == "straight":
+            if last_music_name in music_files:
+                idx = music_files.index(last_music_name)
+                if idx + 1 < len(music_files):
+                    next_song = music_files[idx + 1]
+                    settings["last_music"] = next_song
+                    save_settings(settings)
+                    now_playing.setText(next_song)
+                    player.setSource(QUrl.fromLocalFile(str(MUSIC_PATH / next_song)))
+                    player.play()
+                    movie.start()
+                else:
+                    next_song = music_files[0]
+                    settings["last_music"] = next_song
+                    save_settings(settings)
+                    now_playing.setText(next_song)
+                    player.setSource(QUrl.fromLocalFile(str(MUSIC_PATH / next_song)))
+                    player.play()
+                    movie.start()
+
+    player.mediaStatusChanged.connect(
+        lambda status: handle_song_finished() if status == QMediaPlayer.MediaStatus.EndOfMedia else None
+    )
+# ------------------------------------------------------------------------------------
 
     # Back button
     back_btn = QPushButton("Back")
