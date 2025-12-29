@@ -13,7 +13,7 @@ from core.path import MUSIC_PATH, PLAYER_PATH, SETTINGS_JSON
 from core.music_picker import MusicPickerDialog
 
 
-# JSON helpers ----------------
+# JSON helpers --------------------------------
 def load_settings():
     if SETTINGS_JSON.exists():
         try:
@@ -29,7 +29,7 @@ def save_settings(data):
         encoding="utf-8"
     )
 
-# Music page ----------------
+# Music page --------------------------------------------
 def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     page = QFrame()
     page.setObjectName("musicNeonFrame")
@@ -54,7 +54,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
 
     settings = load_settings()
 
-    # helpers ----------
+    # helpers ----------------
     def style_neon_button(btn):
         if neon_enabled:
             btn.setStyleSheet(f"""
@@ -141,7 +141,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
         idx = music_files.index(current)
         play_song(music_files[(idx - 1) % len(music_files)])
 
-    # UI ----------
+    # UI -------------------------------------------
     music_dir = Path.home() / "MiyaDesktop" / "Music"
     music_hint = QLabel(f"🎵 Add music files to:\n{music_dir}")
     music_hint.setStyleSheet("color: #aaaaaa; font-size: 11px; padding-top: 4px;")
@@ -183,7 +183,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     """)
     layout.addWidget(progress_slider, alignment=Qt.AlignmentFlag.AlignHCenter)
 
-    # music progress logic ---------------------------
+    # music progress logic -------------------------------------------
     is_user_seeking = False
     def update_progress(position):
         if player.duration() > 0 and not is_user_seeking:
@@ -225,11 +225,11 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
         QSlider::handle:horizontal { width: 16px; background: #00ffff; border-radius: 8px; margin: -4px 0; }
     """)
 
-    dots_btn = QPushButton("⋮")
-    dots_btn.setFixedSize(40, 40)
-    grey_button(dots_btn)
+    list_btn = QPushButton("List")
+    list_btn.setFixedSize(80, 40)
+    grey_button(list_btn)
 
-    # Playback modes ----------
+    # Playback modes ---------------------------
     playback_mode = "repeat"
 
     mode_layout = QHBoxLayout()
@@ -250,7 +250,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     layout.addLayout(mode_layout)
     layout.addSpacing(12)
     layout.addWidget(volume_slider, alignment=Qt.AlignmentFlag.AlignHCenter)
-    layout.addWidget(dots_btn, alignment=Qt.AlignmentFlag.AlignHCenter)
+    layout.addWidget(list_btn, alignment=Qt.AlignmentFlag.AlignHCenter)
 
     def update_mode_buttons():
         for btn, mode in zip((repeat_btn, juggle_btn, straight_btn),
@@ -297,7 +297,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
         if status == QMediaPlayer.MediaStatus.EndOfMedia else None
     )
 
-    # Shortcuts ----------
+    # Shortcuts -------------------------------
     QShortcut(QKeySequence(Qt.Key.Key_Up), page).activated.connect(
         lambda: volume_slider.setValue(min(volume_slider.value() + 5, 100))
     )
@@ -310,7 +310,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     QShortcut(QKeySequence(Qt.Key.Key_Right), page).activated.connect(play_next)
     QShortcut(QKeySequence(Qt.Key.Key_Left), page).activated.connect(play_previous)
 
-    # Restore state ----------
+    # Restore state -------------
     audio.setVolume(settings.get("music_volume", 60) / 100)
     volume_slider.setValue(settings.get("music_volume", 60))
 
@@ -319,7 +319,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
         if settings.get("music_paused", True):
             movie.stop()
 
-    # Controls ----------
+    # Controls --------------------------------------
     def toggle_play():
         if player.playbackState() == QMediaPlayer.PlaybackState.PlayingState:
             player.pause()
@@ -344,7 +344,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
         settings["music_paused"] = False
         save_settings(settings)
 
-    dots_btn.clicked.connect(
+    list_btn.clicked.connect(
         lambda: MusicPickerDialog(
             current_music=settings.get("last_music"),
             parent=page
@@ -367,6 +367,6 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
         dlg.music_selected.connect(select_music)
         dlg.exec()
 
-    dots_btn.clicked.connect(open_picker)
+    list_btn.clicked.connect(open_picker)
 
     return page, back_btn

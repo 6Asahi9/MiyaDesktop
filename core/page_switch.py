@@ -1,29 +1,121 @@
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel,
-    QFileDialog, QScrollArea
+    QFileDialog, QScrollArea, QDialog, QLineEdit,
+    QDialogButtonBox, QMessageBox
 )
+from PyQt6.QtCore import Qt
 from pathlib import Path
 import json
 from core.path import SETTINGS_JSON
 
-# ----------------- JSON helpers -----------------
+
+# JSON helpers -----------------------------------------
 def load_settings():
     if SETTINGS_JSON.exists():
         with open(SETTINGS_JSON, "r") as f:
             return json.load(f)
     return {}
 
+
 def save_settings(settings):
     SETTINGS_JSON.parent.mkdir(parents=True, exist_ok=True)
     with open(SETTINGS_JSON, "w") as f:
         json.dump(settings, f, indent=4)
 
-# ----------------- App Manager page -----------------
+
+# Add App Dialog ---------------------
+class AddAppDialog(QDialog):
+    def __init__(self, parent=None, existing_names=None):
+        super().__init__(parent)
+        self.setWindowTitle("Add Application")
+        self.setFixedSize(420, 160)
+        self.existing_names = existing_names or set()
+
+        layout = QVBoxLayout(self)
+
+        self.name_input = QLineEdit()
+        self.name_input.setPlaceholderText("Application name")
+
+        self.path_input = QLineEdit()
+        self.path_input.setPlaceholderText("Path to executable")
+
+        browse_btn = QPushButton("Browse")
+        browse_btn.clicked.connect(self.browse_file)
+
+        path_layout = QHBoxLayout()
+        path_layout.addWidget(self.path_input)
+        path_layout.addWidget(browse_btn)
+
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok |
+            QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.validate_and_accept)
+        buttons.rejected.connect(self.reject)
+
+        layout.addWidget(self.name_input)
+        layout.addLayout(path_layout)
+        layout.addWidget(buttons)
+
+        self.name_input.returnPressed.connect(self.validate_and_accept)
+        self.path_input.returnPressed.connect(self.validate_and_accept)
+
+    def browse_file(self):
+        file, _ = QFileDialog.getOpenFileName(
+            self, "Select EXE", "", "Executables (*.exe)"
+        )
+        if file:
+            self.path_input.setText(file)
+
+    def validate_and_accept(self):
+        name = self.name_input.text().strip()
+        path = self.path_input.text().strip()
+
+        if not name and not path:
+            QMessageBox.warning(
+                self, "Missing Information",
+                "Please enter both a name and a path."
+            )
+            return
+
+        if not name:
+            QMessageBox.warning(
+                self, "Missing Name",
+                "Please enter an application name."
+            )
+            return
+
+        if not path:
+            QMessageBox.warning(
+                self, "Missing Path",
+                "Please enter a path to the executable."
+            )
+            return
+
+        if name in self.existing_names:
+            QMessageBox.warning(
+                self, "Duplicate Name",
+                "An application with this name already exists.\n"
+                "Please choose a different name."
+            )
+            return
+
+        self.accept()
+
+    def get_data(self):
+        return {
+            "name": self.name_input.text().strip(),
+            "path": self.path_input.text().strip()
+        }
+
+
+# App Manager page --------------------------------------
 def create_app_manager_page(stack):
     page = QWidget()
+    page.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
     layout = QVBoxLayout(page)
 
-    # Top bar with Add button
+    # Top bar
     top_bar = QHBoxLayout()
     add_btn = QPushButton("Add")
     back_btn = QPushButton("Back")
@@ -35,44 +127,100 @@ def create_app_manager_page(stack):
     top_bar.addWidget(back_btn)
     layout.addLayout(top_bar)
 
+    # Scroll area
     scroll_area = QScrollArea()
     scroll_area.setWidgetResizable(True)
+
     content_widget = QWidget()
     content_layout = QVBoxLayout(content_widget)
+    content_layout.addStretch()  
+
     scroll_area.setWidget(content_widget)
     layout.addWidget(scroll_area)
 
     settings = load_settings()
     saved_apps = settings.get("added_apps", [])
-    for path in saved_apps:
-        lbl = QLabel(path)
-        content_layout.addWidget(lbl)
 
+    selected = {"widget": None, "app": None}
+
+    # Row helper -------------------------------------------
+    def add_app_row(app):
+        row = QWidget()
+        row_layout = QHBoxLayout(row)
+        row_layout.setContentsMargins(6, 6, 6, 6)
+
+        row.setStyleSheet(
+            "QWidget { border: 1px solid white; font-size: 15px;}"
+        )
+
+        name_lbl = QLabel(app["name"])
+        path_lbl = QLabel(app["path"])
+
+        row_layout.addWidget(name_lbl, stretch=3)
+        row_layout.addWidget(path_lbl, stretch=1)
+
+        def select_row():
+            if selected["widget"]:
+                selected["widget"].setStyleSheet(
+                    "QWidget { border: 1px solid white;}"
+                )
+
+            row.setStyleSheet(
+                "QWidget { background-color: #00ffff; border: 1px solid black; color: black; font-size: 15px;}"
+            )
+            selected["widget"] = row
+            selected["app"] = app
+
+        row.mousePressEvent = lambda e: select_row()
+
+        content_layout.insertWidget(content_layout.count() - 1, row)
+
+    # Load saved apps
+    for app in saved_apps:
+        add_app_row(app)
+
+    # Add logic -------------------------------
     def add_file():
-        files, _ = QFileDialog.getOpenFileNames(page, "Select EXE files", "", "Executables (*.exe)")
-        for f in files:
-            if "Windows" in f or "Program Files" in f:
-                continue
-            if f not in saved_apps:
-                saved_apps.append(f)
-                lbl = QLabel(f)
-                content_layout.addWidget(lbl)
-        settings["added_apps"] = saved_apps
-        save_settings(settings)
+        existing_names = {app["name"] for app in saved_apps}
+        dialog = AddAppDialog(page, existing_names=existing_names)
+
+        if dialog.exec():
+            data = dialog.get_data()
+
+            saved_apps.append(data)
+            settings["added_apps"] = saved_apps
+            save_settings(settings)
+
+            add_app_row(data)
 
     add_btn.clicked.connect(add_file)
-
     back_btn.clicked.connect(lambda: stack.setCurrentIndex(0))
+
+    # Delete key handling ------------------------------------------
+    def keyPressEvent(event):
+        if event.key() == Qt.Key.Key_Delete and selected["app"]:
+            app = selected["app"]
+            widget = selected["widget"]
+
+            saved_apps.remove(app)
+            settings["added_apps"] = saved_apps
+            save_settings(settings)
+
+            widget.setParent(None)
+            selected["widget"] = None
+            selected["app"] = None
+
+    page.keyPressEvent = keyPressEvent
 
     return page
 
-# ----------------- Legacy helpers -----------------
+
+# Legacy helpers ------------------------
 def switch_to_app_manager(stack):
     print("Opening App Manager...")
     stack.setCurrentIndex(1)
 
+
 def switch_to_main(stack):
     print("Returning to Main Page")
     stack.setCurrentIndex(0)
-
-# -------------------------------------------------------------------------------------------------------------
