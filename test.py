@@ -31,13 +31,29 @@
 #     print(f"Pressed: {key}")
 
 #note to myself : previous one failed xoxo
-import keyboard
+# import keyboard
 
-def listen_hotkey():
-    print("Listening for Ctrl + M...")
+# def listen_hotkey():
+#     print("Listening for Ctrl + M...")
 
-    keyboard.add_hotkey('ctrl+m', lambda: print("✅ Ctrl + M detected!"))
+#     keyboard.add_hotkey('ctrl+m', lambda: print("✅ Ctrl + M detected!"))
 
-    keyboard.wait('esc')  
+#     keyboard.wait('esc')  
 
-listen_hotkey()
+# listen_hotkey()
+
+# import winreg
+
+# key_path = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+# with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+#     desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
+# print(desktop_path)  # this will be TrashDesk
+
+import os, winreg
+
+key_path = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+    desktop_path, _ = winreg.QueryValueEx(key, "Desktop")
+
+desktop_path = os.path.expandvars(desktop_path)  # resolves %USERPROFILE%
+print(desktop_path)  # C:\Users\Asahi\TrashDesk

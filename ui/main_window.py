@@ -98,7 +98,13 @@ class MainWindow(QWidget):
         wrapper_layout.addWidget(self.warning_bar)
 
         self.init_hotkey_listener()
-    
+
+    # def on_theme_toggled(self, checked: bool):
+    #     bg_color = toggle_theme(checked)
+    #     self.neon_frame.setStyleSheet(f"background-color: {bg_color};")
+    #     text_color = "black" if checked else "white"
+    #     self.left_panel.setStyleSheet(f"* {{ color: {text_color}; }}")
+
     def init_hotkey_listener(self):
         print("🔉 Hotkey listener active for Ctrl + M")
         keyboard.add_hotkey('ctrl+m', self.on_ctrl_m_pressed)
@@ -228,6 +234,9 @@ class MainWindow(QWidget):
         button_layout.addWidget(hotkey_hint)
 
         _, theme_widget = self.build_toggle_row("Switch Theme", False, toggle_theme)
+        # self.theme_toggle, theme_widget = self.build_toggle_row("Switch Theme", False)
+        # self.theme_toggle.toggled.connect(self.on_theme_toggled)
+
         avatar_toggle , avatar_widget = self.build_toggle_row("Show Miya", True, toggle_avatar)
         _, startup_widget = self.build_toggle_row("Run at Startup", False, toggle_startup)
         _, neon_widget = self.build_toggle_row("Enable Neon Glow", True, self.toggle_neon)

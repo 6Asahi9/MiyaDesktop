@@ -9,6 +9,7 @@ import json
 from core.path import SETTINGS_JSON
 import os
 import win32com.client
+import winreg
 
 
 # JSON helpers -----------------------------------------
@@ -24,26 +25,37 @@ def save_settings(settings):
     with open(SETTINGS_JSON, "w") as f:
         json.dump(settings, f, indent=4)
 
+def get_desktop_from_registry():
+    try:
+        with winreg.OpenKey(
+            winreg.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+        ) as key:
+            value, _ = winreg.QueryValueEx(key, "Desktop")
+            return Path(os.path.expandvars(value))
+    except Exception:
+        return None
+
 def scan_desktop_shortcuts(existing_names):
     shell = win32com.client.Dispatch("WScript.Shell")
 
-    desktop_paths = [
-        Path.home() / "Desktop",
-        Path("C:/Users/Public/Desktop")
-    ]
+    desktop_paths = []
+
+    user_desktop = get_desktop_from_registry()
+    if user_desktop and user_desktop.exists():
+        desktop_paths.append(user_desktop)
+
+    public_desktop = Path("C:/Users/Public/Desktop")
+    if public_desktop.exists():
+        desktop_paths.append(public_desktop)
 
     found_apps = []
 
     for desktop in desktop_paths:
-        if not desktop.exists():
-            continue
-
         for lnk in desktop.glob("*.lnk"):
             try:
                 shortcut = shell.CreateShortcut(str(lnk))
-                target = shortcut.Targetpath
-                if not target:
-                    target = str(lnk)
+                target = shortcut.Targetpath or str(lnk)
 
                 name = lnk.stem
 
