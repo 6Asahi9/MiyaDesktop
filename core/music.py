@@ -142,14 +142,14 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
         play_song(music_files[(idx - 1) % len(music_files)])
 
     # UI -------------------------------------------
-    music_dir = Path.home() / "MiyaDesktop" / "Music"
-    music_hint = QLabel(f"🎵 Add music files to:\n{music_dir}")
-    music_hint.setStyleSheet("color: #aaaaaa; font-size: 11px; padding-top: 4px;")
+    music_dir = Path.home() / "Music"
+    music_hint = QLabel(f"🎵 Add music files to: {music_dir}")
+    music_hint.setStyleSheet("color: #aaaaaa; font-size: 11px; padding-top: 4px; background-color: #1a1a1a;")
     music_hint.setAlignment(Qt.AlignmentFlag.AlignCenter)
     layout.addWidget(music_hint)
 
     now_playing = QLabel("No music selected")
-    now_playing.setStyleSheet("color: #ffffff; font-size: 13px;")
+    now_playing.setStyleSheet("color: #ffffff; font-size: 13px; background-color: #1a1a1a;")
     now_playing.setAlignment(Qt.AlignmentFlag.AlignCenter)
     layout.addWidget(now_playing)
 
@@ -157,6 +157,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     player_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
     movie = QMovie(str(PLAYER_PATH))
     movie.setScaledSize(QSize(125, 125))
+    player_label.setStyleSheet("background-color: #1a1a1a;")
     player_label.setMovie(movie)
     layout.addWidget(player_label)
 
@@ -169,6 +170,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     progress_slider.setRange(0, 1000)
     progress_slider.setFixedWidth(440)
     progress_slider.setStyleSheet("""
+        QSlider {background-color: #1a1a1a;}
         QSlider::groove:horizontal {
             height: 8px;
             background: #444;
@@ -221,11 +223,13 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     volume_slider.setRange(0, 100)
     volume_slider.setFixedWidth(220)
     volume_slider.setStyleSheet("""
+        QSlider {background-color: #1a1a1a;}
         QSlider::groove:horizontal { height: 8px; background: #444; border-radius: 4px; }
         QSlider::handle:horizontal { width: 16px; background: #00ffff; border-radius: 8px; margin: -4px 0; }
     """)
 
     list_btn = QPushButton("List")
+    list_btn.setShortcut(QKeySequence("4"))
     list_btn.setFixedSize(80, 40)
     grey_button(list_btn)
 
@@ -234,8 +238,11 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
 
     mode_layout = QHBoxLayout()
     repeat_btn = QPushButton("Repeat")
+    repeat_btn.setShortcut(QKeySequence("1"))
     juggle_btn = QPushButton("Juggle")
+    juggle_btn.setShortcut(QKeySequence("2"))
     straight_btn = QPushButton("Straight")
+    straight_btn.setShortcut(QKeySequence("3"))
 
     for btn in (repeat_btn, juggle_btn, straight_btn):
         grey_button(btn)
@@ -263,16 +270,19 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     def set_repeat():
         nonlocal playback_mode
         playback_mode = "repeat"
+        print("repeat")
         update_mode_buttons()
 
     def set_juggle():
         nonlocal playback_mode
         playback_mode = "juggle"
+        print("juggle")
         update_mode_buttons()
 
     def set_straight():
         nonlocal playback_mode
         playback_mode = "straight"
+        print("straight")
         update_mode_buttons()
 
     repeat_btn.clicked.connect(set_repeat)
@@ -354,6 +364,7 @@ def create_music_page(stack, neon_enabled=True, neon_color="#00ffff"):
     back_btn = QPushButton("Back")
     back_btn.setFixedSize(140, 50)
     style_neon_button(back_btn)
+    back_btn.setShortcut(QKeySequence(Qt.Key.Key_Escape))
     back_btn.clicked.connect(lambda: stack.setCurrentIndex(0))
 
     layout.addStretch()

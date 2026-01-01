@@ -10,7 +10,7 @@ from core.path import SETTINGS_JSON
 import os
 import win32com.client
 import winreg
-
+from PyQt6.QtGui import QKeySequence
 
 # JSON helpers -----------------------------------------
 def load_settings():
@@ -174,9 +174,51 @@ def create_app_manager_page(stack):
     add_btn = QPushButton("Add")
     auto_btn = QPushButton("Auto")
     back_btn = QPushButton("Back")
+    back_btn.setShortcut(QKeySequence(Qt.Key.Key_Escape))
     add_btn.setFixedSize(120, 50)
+    add_btn.setShortcut(QKeySequence("1"))
+    add_btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #333333;
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    padding: 8px 16px;
+                    font-size: 15px;
+                }
+                QPushButton:hover {
+                    background-color: #444444;
+                }
+            """)
     auto_btn.setFixedSize(120, 50)
+    auto_btn.setShortcut(QKeySequence("2"))
+    auto_btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #333333;
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    padding: 8px 16px;
+                    font-size: 15px;
+                }
+                QPushButton:hover {
+                    background-color: #444444;
+                }
+            """)
     back_btn.setFixedSize(120, 50)
+    back_btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #333333;
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    padding: 8px 16px;
+                    font-size: 15px;
+                }
+                QPushButton:hover {
+                    background-color: #444444;
+                }
+            """)
 
     top_bar.addWidget(add_btn)
     top_bar.addWidget(auto_btn)

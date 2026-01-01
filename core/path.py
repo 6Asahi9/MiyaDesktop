@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import sys
+import winreg
 
 def get_base_path():
     if getattr(sys, "frozen", False):
@@ -12,7 +13,7 @@ BASE_PATH = get_base_path()
 CONFIG_PATH = BASE_PATH / "config"
 ASSETS_PATH = BASE_PATH / "assets"
 SETTINGS_JSON = CONFIG_PATH / "settings.json"
-MUSIC_PATH = BASE_PATH / "music"
+# MUSIC_PATH = BASE_PATH / "music"
 DEFAULT_AVATAR = ASSETS_PATH / "gif/placeholder_miya.gif"
 PLAYER_PATH = ASSETS_PATH / "gif/SimpsonsSticker.gif"
 
@@ -26,3 +27,11 @@ def get_avatar_path():
         except Exception:
             pass
     return DEFAULT_AVATAR
+
+def get_windows_music_folder():
+    reg_path = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path) as key:
+        music_path, _ = winreg.QueryValueEx(key, "My Music")
+    return Path(music_path).expanduser()
+
+MUSIC_PATH = get_windows_music_folder()

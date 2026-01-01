@@ -10,11 +10,13 @@ from core.theme import toggle_theme, load_theme, save_theme
 from core.avatar_toggle import toggle_avatar , load_settings
 from core.demonMode import toggle_demon_mode
 from core.fur import switch_fur
+import keyboard
 from core.page_switch import switch_to_main, create_app_manager_page
 from core.mic_handler import activate_miya_listener
-import keyboard
 from core.path import get_avatar_path
 from core.music import create_music_page
+from PyQt6.QtGui import QKeySequence, QShortcut
+
 class ThemeLabel(QLabel):
     def __init__(self, text, main_window, red=False, *args, **kwargs):
         super().__init__(text, *args, **kwargs)
@@ -268,6 +270,7 @@ class MainWindow(QWidget):
 
         self.app_btn = QPushButton("Add Application")
         self.app_btn.setFixedSize(300, 40)
+        self.app_btn.setShortcut(QKeySequence("1"))
         self.app_btn.clicked.connect(lambda: self.stack.setCurrentIndex(1))
 
         font_row = QHBoxLayout()
@@ -306,11 +309,13 @@ class MainWindow(QWidget):
         # --------------------------------
         self.music_btn = QPushButton("Music")
         self.music_btn.setFixedSize(300, 40)
+        self.music_btn.setShortcut(QKeySequence("2"))
         self.music_btn.clicked.connect(lambda: print("🎵 Music button clicked"))
         self.music_btn.clicked.connect(lambda: self.stack.setCurrentIndex(2))
 
         self.custom_btn = QPushButton("Custom", ui_container)
         self.custom_btn.setFixedSize(150, 40)
+        self.custom_btn.setShortcut(QKeySequence("4"))
         self.custom_btn.move(450, 270)
         self.custom_btn.clicked.connect(lambda: print("Custom clicked"))
         self.style_neon_button(self.custom_btn)
@@ -319,6 +324,7 @@ class MainWindow(QWidget):
 
         self.color_btn = QPushButton("Choose Neon Color")
         self.color_btn.setFixedSize(300, 40)
+        self.color_btn.setShortcut(QKeySequence("3"))
         self.color_btn.clicked.connect(self.pick_neon_color)
 
         self.style_neon_button(self.app_btn)
@@ -397,6 +403,7 @@ class MainWindow(QWidget):
             label.update_color()
 
         self.apply_font_size()
+        QShortcut(QKeySequence(Qt.Key.Key_Backspace), self, activated=self.showMinimized)
 
     def apply_font_size(self):
         size = self.font_size_input.value()
@@ -466,3 +473,4 @@ class MainWindow(QWidget):
                     background-color: #1a1a1a;
                 }}
             """)
+       
