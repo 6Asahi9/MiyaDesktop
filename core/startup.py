@@ -1,10 +1,22 @@
 import os
 import sys
 import winreg  
+import json
+from core.path import SETTINGS_JSON
 
 APP_NAME = "MiyaDesktop"
+def load_setting() -> bool:
+    if not SETTINGS_JSON.exists():
+        return False
+
+    with open(SETTINGS_JSON, "r") as f:
+        data = json.load(f)
+
+    return data.get("run_at_startup", False)
 
 def toggle_startup(is_on: bool):
+    save_startup_setting(is_on)
+
     if getattr(sys, 'frozen', False):
         app_path = sys.executable
     else:
@@ -25,5 +37,18 @@ def toggle_startup(is_on: bool):
             winreg.DeleteValue(key, APP_NAME)
             print("Startup off")
         except FileNotFoundError:
-            pass  
+            pass
+
     winreg.CloseKey(key)
+
+def save_startup_setting(is_on: bool):
+    data = {}
+
+    if SETTINGS_JSON.exists():
+        with open(SETTINGS_JSON, "r") as f:
+            data = json.load(f)
+
+    data["run_at_startup"] = is_on
+
+    with open(SETTINGS_JSON, "w") as f:
+        json.dump(data, f, indent=2)

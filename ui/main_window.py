@@ -16,6 +16,7 @@ from core.mic_handler import activate_miya_listener
 from core.path import get_avatar_path
 from core.music import create_music_page
 from PyQt6.QtGui import QKeySequence, QShortcut
+from core.startup import load_setting
 
 class ThemeLabel(QLabel):
     def __init__(self, text, main_window, red=False, *args, **kwargs):
@@ -252,7 +253,8 @@ class MainWindow(QWidget):
 
         theme_toggle, theme_widget = self.build_toggle_row("Switch Theme", self.is_light_theme, self.on_theme_toggled)
         avatar_toggle , avatar_widget = self.build_toggle_row("Show Miya", True, toggle_avatar)
-        _, startup_widget = self.build_toggle_row("Run at Startup", False, toggle_startup)
+        startup_enabled = load_setting()
+        _, startup_widget = self.build_toggle_row("Run at Startup", startup_enabled, toggle_startup)
         _, neon_widget = self.build_toggle_row("Enable Neon Glow", True, self.toggle_neon)
         _, demon_widget = self.build_toggle_row("Override Mode", False, toggle_demon_mode, red=True)
 
