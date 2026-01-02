@@ -37,8 +37,21 @@
 ### Specials
 
 ~Ctrl + M allows her to listen to commands and respond accordingly (planned)~
+
 ~Add music in your registry's Music folder~
+
 ~Don't remove 📁 emoji when editing the name of folder in Add Application~
+
 ~Settings are in "C:\Users\%USERPROFILE%\Documents\MiyaDesktop"~
-~Add Application does not touch individual files or photos on the Desktop —
-only folders and shortcuts. Single files are assumed to be intentional.~
+
+~Add Application does not touch individual files or photos on the Desktop —only folders and shortcuts. Single files are assumed to be intentional.~
+
+~Folders are copied, not moved. Deleting them from Desktop is always the user's choice.~
+
+~Users can safely delete the shortcuts from Desktop~
+
+~Enabling startup does not slow system boot — Miya launches quietly in the background.~
+
+~Miya uses around ~30MB of memory while running.~
+
+~Removing MiyaDesktop does not delete any user files or folders.~

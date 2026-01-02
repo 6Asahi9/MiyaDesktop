@@ -11,7 +11,7 @@ from core.avatar_toggle import toggle_avatar , load_settings
 from core.demonMode import toggle_demon_mode
 from core.fur import switch_fur
 import keyboard
-from core.page_switch import switch_to_main, create_app_manager_page
+from core.page_switch import create_app_manager_page
 from core.mic_handler import activate_miya_listener
 from core.path import get_avatar_path
 from core.music import create_music_page
