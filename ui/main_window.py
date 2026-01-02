@@ -16,7 +16,8 @@ from core.mic_handler import activate_miya_listener
 from core.path import get_avatar_path
 from core.music import create_music_page
 from PyQt6.QtGui import QKeySequence, QShortcut
-from core.startup import load_setting
+from core.startup import load_startup_setting
+from core.neon import load_neon_settings, save_neon_settings
 
 class ThemeLabel(QLabel):
     def __init__(self, text, main_window, red=False, *args, **kwargs):
@@ -80,9 +81,7 @@ class MainWindow(QWidget):
 
         self.is_light_theme = load_theme()
         self.bg_colors = toggle_theme(self.is_light_theme) 
-    
-        self.neon_enabled = True
-        self.neon_color = "#00ffff"
+        self.neon_enabled, self.neon_color = load_neon_settings()
         self.toggle_refs = []
         self.toggle_labels = []
         self.stack = QStackedLayout()
@@ -204,10 +203,6 @@ class MainWindow(QWidget):
         toggle.setChecked(default_checked)
         toggle.animate_toggle()
         self.toggle_refs.append(toggle)
-
-        # label = QLabel(label_text)
-        # self.toggle_labels.append(label)
-        # label.setStyleSheet(f"color: {'red' if red else 'white'}; font-weight: {'bold' if red else 'normal'};")
         label = ThemeLabel(label_text, self, red=red)
         self.toggle_labels.append(label)
 
@@ -253,9 +248,9 @@ class MainWindow(QWidget):
 
         theme_toggle, theme_widget = self.build_toggle_row("Switch Theme", self.is_light_theme, self.on_theme_toggled)
         avatar_toggle , avatar_widget = self.build_toggle_row("Show Miya", True, toggle_avatar)
-        startup_enabled = load_setting()
+        startup_enabled = load_startup_setting()
         _, startup_widget = self.build_toggle_row("Run at Startup", startup_enabled, toggle_startup)
-        _, neon_widget = self.build_toggle_row("Enable Neon Glow", True, self.toggle_neon)
+        neon_toggle, neon_widget = self.build_toggle_row("Enable Neon Glow",self.neon_enabled,self.toggle_neon)
         _, demon_widget = self.build_toggle_row("Override Mode", False, toggle_demon_mode, red=True)
 
         self.settings = load_settings()
@@ -445,6 +440,7 @@ class MainWindow(QWidget):
 
     def toggle_neon(self, checked):
         self.neon_enabled = checked
+        save_neon_settings(enabled=checked)
         self.update_neon_styles()
         for btn in (self.app_btn, self.music_btn, self.color_btn, self.custom_btn):
             self.style_neon_button(btn)
@@ -457,6 +453,7 @@ class MainWindow(QWidget):
         color = QColorDialog.getColor()
         if color.isValid():
             self.neon_color = color.name()
+            save_neon_settings(color=self.neon_color)
             for toggle in self.toggle_refs:
                 toggle.update_neon_color(self.neon_color)
             self.update_neon_styles()

@@ -5,7 +5,7 @@ import json
 from core.path import SETTINGS_JSON
 
 APP_NAME = "MiyaDesktop"
-def load_setting() -> bool:
+def load_startup_setting() -> bool:
     if not SETTINGS_JSON.exists():
         return False
 
