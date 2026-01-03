@@ -1,4 +1,7 @@
-## Shortcuts & Controls
+⚠️ Offline voice mode has limited performance ⚠️
+Speech recognition accuracy may be reduced when no internet connection is available.
+
+## Controls & Behavior
 
 ### General
 
@@ -43,9 +46,9 @@
 
 ~Don't remove 📁 emoji when editing the name of folder in Add Application~
 
-~Settings are in "C:\Users\%USERPROFILE%\Documents\MiyaDesktop"~
+~Settings are in "C:\Users%USERPROFILE%\Documents\MiyaDesktop"~
 
-~Add Application does not touch individual files or photos on the Desktop —only folders and shortcuts. Single files are assumed to be intentional.~
+~Add Application does not touch individual files or photos on the Desktop — only folders and shortcuts. Single files are assumed to be intentional.~
 
 ~Folders are copied, not moved. Deleting them from Desktop is always the user's choice.~
 
