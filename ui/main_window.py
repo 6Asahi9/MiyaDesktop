@@ -18,6 +18,7 @@ from core.music import create_music_page
 from PyQt6.QtGui import QKeySequence, QShortcut
 from core.startup import load_startup_setting
 from core.neon import load_neon_settings, save_neon_settings
+from core.api_dialog import ApiDialog
 
 class ThemeLabel(QLabel):
     def __init__(self, text, main_window, red=False, *args, **kwargs):
@@ -129,6 +130,10 @@ class MainWindow(QWidget):
                 }}
             """)
         self.apply_font_size()
+
+    def open_api_dialog(self):
+        dialog = ApiDialog(self)
+        dialog.exec()
 
     def on_theme_toggled(self, checked: bool):
         save_theme(checked)                  
@@ -317,6 +322,15 @@ class MainWindow(QWidget):
         self.custom_btn.clicked.connect(lambda: print("Custom clicked"))
         self.style_neon_button(self.custom_btn)
         self.custom_btn.show()
+
+        self.api_btn = QPushButton("API", ui_container)
+        self.api_btn.setFixedSize(150, 40)
+        self.api_btn.setShortcut(QKeySequence("5"))
+        self.api_btn.move(450, 330)
+        self.api_btn.clicked.connect(lambda: print("API clicked"))
+        self.api_btn.clicked.connect(self.open_api_dialog)
+        self.style_neon_button(self.api_btn)
+        self.api_btn.show()
         # --------------------------------
 
         self.color_btn = QPushButton("Choose Neon Color")
@@ -414,6 +428,8 @@ class MainWindow(QWidget):
 
         if hasattr(self, "custom_btn"):
             self.style_neon_button(self.custom_btn)
+        if hasattr(self, "api_btn"):
+            self.style_neon_button(self.api_btn)
 
         for btn in (self.app_btn, self.music_btn, self.color_btn):
             self.style_neon_button(btn)
@@ -442,7 +458,7 @@ class MainWindow(QWidget):
         self.neon_enabled = checked
         save_neon_settings(enabled=checked)
         self.update_neon_styles()
-        for btn in (self.app_btn, self.music_btn, self.color_btn, self.custom_btn):
+        for btn in (self.app_btn, self.music_btn, self.color_btn, self.custom_btn, self.api_btn):
             self.style_neon_button(btn)
         for toggle in self.toggle_refs:
             toggle.update_neon_color(self.neon_color)
@@ -457,7 +473,7 @@ class MainWindow(QWidget):
             for toggle in self.toggle_refs:
                 toggle.update_neon_color(self.neon_color)
             self.update_neon_styles()
-            for btn in (self.app_btn, self.music_btn, self.color_btn, self.custom_btn):
+            for btn in (self.app_btn, self.music_btn, self.color_btn, self.custom_btn, self.api_btn):
                 self.style_neon_button(btn)
             self.style_neon_button(self.music_back_btn)
             self.update_music_page_neon()

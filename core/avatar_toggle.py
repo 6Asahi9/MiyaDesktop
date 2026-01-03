@@ -3,7 +3,6 @@ from pathlib import Path
 from PyQt6.QtWidgets import QWidget, QLabel, QApplication
 from PyQt6.QtCore import Qt, QSize, QPoint
 from PyQt6.QtGui import QMovie
-
 from core.path import SETTINGS_JSON, ASSETS_PATH
 from core.path import get_avatar_path
 
@@ -28,7 +27,7 @@ class FloatingMiya(QWidget):
         self.label.setMovie(self.movie)
         self.movie.start()
 
-    # ---- Drag handling ----
+    # Drag handling 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
             self._drag_offset = event.globalPosition().toPoint() - self.pos()
@@ -43,7 +42,7 @@ class FloatingMiya(QWidget):
         self._drag_offset = None
         event.accept()
 
-    # ---- Initial placement ----
+    # Initial placement 
     def show_at_corner(self):
         screen = QApplication.primaryScreen()
         if not screen:
@@ -58,7 +57,7 @@ class FloatingMiya(QWidget):
         self.show()
 
 
-# ---------- Settings helpers ----------
+# Settings helpers ------------
 def load_settings():
     if SETTINGS_JSON.exists():
         try:
@@ -73,7 +72,7 @@ def save_settings(settings: dict):
     with open(SETTINGS_JSON, "w", encoding="utf-8") as f:
         json.dump(settings, f, indent=4)
 
-# ---------- Toggle logic ----------
+# Toggle logic --------------------------------------------
 _floating_miya: FloatingMiya | None = None
 
 def toggle_avatar(show_avatar: bool):
