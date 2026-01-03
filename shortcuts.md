@@ -11,6 +11,7 @@
 2 — Open Music Page
 3 — Open Choose Neon Colour
 4 — Open Custom
+5 — Open API
 
 ### Add Application
 
