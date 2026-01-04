@@ -20,6 +20,7 @@ from core.startup import load_startup_setting
 from core.neon import load_neon_settings, save_neon_settings
 from core.api_dialog import ApiDialog
 from core.custom_path import CustomPathDialog
+from PyQt6.QtCore import QTimer
 
 class ThemeLabel(QLabel):
     def __init__(self, text, main_window, red=False, *args, **kwargs):
@@ -261,7 +262,16 @@ class MainWindow(QWidget):
         startup_enabled = load_startup_setting()
         _, startup_widget = self.build_toggle_row("Run at Startup", startup_enabled, toggle_startup)
         neon_toggle, neon_widget = self.build_toggle_row("Enable Neon Glow",self.neon_enabled,self.toggle_neon)
-        _, demon_widget = self.build_toggle_row("Override Mode", False, toggle_demon_mode, red=True)
+        
+        def on_demon_toggled(checked):
+            toggle_demon_mode(checked)
+            def reset_toggle():
+                demon_toggle.setChecked(False)
+                demon_toggle.animate_toggle()
+
+            QTimer.singleShot(5000, reset_toggle)
+        demon_toggle, demon_widget = self.build_toggle_row("Override Mode", False, on_demon_toggled, red=True)
+
 
         self.settings = load_settings()
         avatar_enabled = self.settings.get("floating_miya_enabled", True)
