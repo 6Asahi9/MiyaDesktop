@@ -36,7 +36,7 @@
 # def listen_hotkey():
 #     print("Listening for Ctrl + M...")
 
-#     keyboard.add_hotkey('ctrl+m', lambda: print("✅ Ctrl + M detected!"))
+#     keyboard.add_hotkey('ctrl+m', lambda: print("Ctrl + M detected!"))
 
 #     keyboard.wait('esc')  
 
@@ -72,18 +72,18 @@
 # print(f"Windows Music folder updated to: {music_path_str}")
 
 
-import winreg
-from pathlib import Path
-import os
+# import winreg
+# from pathlib import Path
+# import os
 
-# Default path for your Music folder
-default_music_path = str(Path(os.environ["USERPROFILE"]) / "Music")
+# # Default path for your Music folder
+# default_music_path = str(Path(os.environ["USERPROFILE"]) / "Music")
 
-# Registry location
-reg_path = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
+# # Registry location
+# reg_path = r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
 
-# Open and update the key
-with winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path, 0, winreg.KEY_SET_VALUE) as key:
-    winreg.SetValueEx(key, "My Music", 0, winreg.REG_EXPAND_SZ, default_music_path)
+# # Open and update the key
+# with winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path, 0, winreg.KEY_SET_VALUE) as key:
+#     winreg.SetValueEx(key, "My Music", 0, winreg.REG_EXPAND_SZ, default_music_path)
 
-print(f"Music folder restored to: {default_music_path}")
+# print(f"Music folder restored to: {default_music_path}")
