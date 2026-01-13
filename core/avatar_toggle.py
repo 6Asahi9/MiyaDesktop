@@ -35,7 +35,7 @@ class MiyaOverlay(QWidget):
         self.miya = None
         self.text_overlay = TextOverlay(self)
         self.miya = FloatingMiya(self)
-        self.text_overlay.move(0, 10)
+        self.text_overlay.move(0, 140)
         self.center_miya()
         self._drag_offset: QPoint | None = None
 
@@ -139,6 +139,7 @@ class TextOverlay(QWidget):
         self.label.setWordWrap(True)
         self.label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
         self.label.setGeometry(10, 10, 360, 100)
+        self.label.setStyleSheet("font-size: 22px; font-family: 'Segoe UI'; color: black;")  
         self.opacity = QGraphicsOpacityEffect(self)
         self.setGraphicsEffect(self.opacity)
         self.opacity.setOpacity(1)

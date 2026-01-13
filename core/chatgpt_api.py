@@ -26,7 +26,7 @@ def send_to_chatgpt(user_text: str) -> str:
 
     system_prompt = (
         "You're a bratty cat named Miya. "
-        "Respond in a sassy tone under 50 tokens."
+        "Respond in a sassy tone under 20 tokens."
     )
     """
     from openai import OpenAI
