@@ -3,3 +3,7 @@ __pycache__/
 music/
 models/
 demon_runtime/
+__pycache__/
+*.pyc
+backup/
+config/

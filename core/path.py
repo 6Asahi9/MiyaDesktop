@@ -27,7 +27,7 @@ CONFIG_PATH = MIYA_CONFIG_PATH
 ASSETS_PATH = BASE_PATH / "assets"
 SETTINGS_JSON = CONFIG_PATH / "settings.json"
 DEMON_EXE = BASE_PATH / "demon_runtime" / "FakeUACWPF.exe"
-FONT_PATH = ASSETS_PATH / "fonts" / "PressStart2P-Regular.ttf"
+FONT_PATH = ASSETS_PATH / "fonts" / "Workbench-Regular-VariableFont_BLED,SCAN.ttf"
 
 if not SETTINGS_JSON.exists():
     SETTINGS_JSON.write_text("{}", encoding="utf-8")

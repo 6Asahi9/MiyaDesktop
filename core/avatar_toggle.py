@@ -156,7 +156,7 @@ class TextOverlay(QWidget):
         self.label.setGeometry(10, 10, 360, 100)
         self.label.setStyleSheet("""
             font-family: 'Press Start 2P';
-            font-size: 12px;
+            font-size: 20px;
             color: black;
         """) 
         self.opacity = QGraphicsOpacityEffect(self)
