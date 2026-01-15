@@ -6,9 +6,7 @@ import json
 import sys
 import wave
 import urllib.request
-from core.path import CONFIG_PATH
-
-# UI hook (chat bubble)
+from core.path import CONFIG_PATH, BASE_PATH
 from core.avatar_toggle import show_chat_bubble
 
 SETTINGS_JSON = CONFIG_PATH / "settings.json"
@@ -21,10 +19,14 @@ def internet_available():
     except:
         return False
 
-VOSK_MODEL_PATH = os.path.join("models", "vosk")
+# VOSK_MODEL_PATH = os.path.join("models", "vosk")
+VOSK_MODEL_PATH = BASE_PATH / "models" / "vosk"
+
 vosk_model = None
-if os.path.exists(VOSK_MODEL_PATH):
-    vosk_model = Model(VOSK_MODEL_PATH)
+if VOSK_MODEL_PATH.exists():
+    vosk_model = Model(str(VOSK_MODEL_PATH))
+else:
+    print("Vosk model not found:", VOSK_MODEL_PATH)
 
 def load_settings():
     try:
@@ -96,11 +98,15 @@ def activate_miya_listener():
     #         show_chat_bubble(response)
 
     try:
-        wav_path = "temp_audio.wav"
+        if vosk_model is None:
+            show_chat_bubble("Offline ears not found :(")
+            return
+
+        wav_path = CONFIG_PATH / "temp_audio.wav"
         with open(wav_path, "wb") as f:
             f.write(audio.get_wav_data())
 
-        wf = wave.open(wav_path, "rb")
+        wf = wave.open(str(wav_path), "rb")
         rec = KaldiRecognizer(vosk_model, wf.getframerate())
         rec.SetWords(True)
 

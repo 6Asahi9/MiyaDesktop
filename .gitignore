@@ -10,3 +10,4 @@ config/
 main.spec
 build/
 dist/
+Miyadesktop.spec
