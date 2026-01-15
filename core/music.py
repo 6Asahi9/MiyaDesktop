@@ -42,7 +42,7 @@ def open_add_music_dialog(parent=None):
     info_label = QLabel("Place yt-dlp, ffmpeg, and ffprobe in the Music folder.\n"
     "Remove '&list' from the link to avoid downloading FULL playlists.\n"
     "its frezzing during download is normal")
-    info_label.setStyleSheet(""" color: yellow; font-size:15px; """)
+    info_label.setStyleSheet(""" color: red; font-size:15px; """)
     info_label.setWordWrap(True)
     info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
     layout.addWidget(info_label)

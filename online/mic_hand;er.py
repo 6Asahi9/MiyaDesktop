@@ -8,16 +8,6 @@ from core.chatgpt_api import send_to_chatgpt
 from core.path import CONFIG_PATH, BASE_PATH
 from core.avatar_toggle import show_chat_bubble
 
-# --- VOSK (FULLY DISABLED) --------------------------------
-# from vosk import Model, KaldiRecognizer
-# VOSK_MODEL_PATH = BASE_PATH / "models" / "vosk"
-# vosk_model = None
-# if VOSK_MODEL_PATH.exists():
-#     vosk_model = Model(str(VOSK_MODEL_PATH))
-# else:
-#     print("Vosk model not found:", VOSK_MODEL_PATH)
-# -----------------------------------------------------------
-
 SETTINGS_JSON = CONFIG_PATH / "settings.json"
 recognizer = sr.Recognizer()
 
