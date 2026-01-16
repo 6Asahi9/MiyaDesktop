@@ -183,13 +183,19 @@ Multiple playback modes are available, including Repeat (default), Juggle (shuff
       pyinstaller --noconfirm --onedir --windowed --name MiyaDesktop --icon assets/miya.ico --add-data "assets;assets" --add-data "demon_runtime;demon_runtime" --collect-submodules core --collect-submodules ui --collect-all PyQt6 main.py
       ```
 ---
+
 * **Credits & Assets**
 
   * **MiyaDesktop Logo**  
-    * Created on [Design.com](https://www.design.com/)
+    * Created on [Design](https://www.design.com/)
 
   * **Music Window GIF**  
     * Sourced from [Giphy](https://giphy.com/)
 
   * **Included GIFs**  
-    * All included GIFs (except the custom one) were created by me and are posted on [ArtStation](https://www.artstation.com/artwork/lGmDQV)
+    * All included GIFs were created by me and are posted on [ArtStation](https://www.artstation.com/artwork/lGmDQV)
+
+  * **Other Edits**
+    * Other edits are created on [canva](https://www.canva.in/)
+
+---
