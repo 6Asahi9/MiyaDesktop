@@ -57,7 +57,10 @@ MiyaDesktop comes with 4 preloaded GIFs and also allows users to load and use th
 
 The Add Application interface provides both manual and automated ways to register applications and folders within MiyaDesktop. The Add button allows users to manually select any file or folder, while the Auto button scans the Desktop and automatically collects shortcuts and folders, excluding individual files and images. A dedicated Folder Toggle determines whether folders detected by Auto are copied into MiyaDesktop/Desktop/ or only registered within the app.
 
-Below the controls, a centralized management window displays all added items, where users can rename, edit, or remove entries at any time. Each entry can be assigned a custom name, which Miya can later recognize — when the user presses Ctrl + M and says “open {name},” Miya searches this list and opens the matching application or folder if it exists.
+Below the controls, a centralized management window displays all added items, where users can rename, edit, or remove entries at any time. Each entry can be assigned a custom name, which Miya can later recognize — when the user presses **Ctrl + M** and says “open {name},” Miya searches this list and opens the matching application or folder if it exists.
+
+All the path gets saved %USERPROFILE%\Documents\MiyaDesktop\config\settings.json 
+Whereas all the folders done by the "Auto" gets copied into %USERPROFILE%\Documents\MiyaDesktop\Desktop\
 
 ---
 
@@ -70,6 +73,8 @@ Below the controls, a centralized management window displays all added items, wh
 The Music interface functions as an integrated media player within MiyaDesktop, displaying all tracks detected from the system’s registered Music folder. Users can control playback, volume, and track navigation directly from this panel, with repeat enabled by default.
 
 Multiple playback modes are available, including Repeat (default), Juggle (shuffle), and Straight (sequential play), allowing for different listening preferences. A built-in Add Music option enables users to download tracks through yt-dlp and immediately make them available within the player.
+
+Add button uses YT-DLP to download music which goes in %USERPROFILE%\Music
 
 ---
 
@@ -107,7 +112,6 @@ Multiple playback modes are available, including Repeat (default), Juggle (shuff
 | Key            | Action                                                                                |
 | -------------- | ------------------------------------------------------------------------------------- |
 | **← / →**      | Change track                                                                          |
-| **↑ / ↓**      | Adjust volume                                                                         |
 | **Enter**      | Play / Pause                                                                          |
 
 ### Playtback modes
