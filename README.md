@@ -115,9 +115,13 @@ Multiple playback modes are available, including Repeat (default), Juggle (shuff
 ## Limitations & Notes
 
 * **Voice Recognition**
-  * Offline version has limited accuracy.
-  * Online version depends on your network speed.
-  * Speech recognition may be reduced when no internet connection is available.
+  * Offline Version  
+    * Uses [Vosk](https://alphacephei.com/vosk/) for speech recognition.  
+    * Accuracy may be limited compared to online use.
+
+  * Online Version  
+    * Uses Google’s online speech recognition API.  
+    * Accuracy depends on network speed and connection quality.
 
 * **Add Application Behavior**
   * Does not touch individual files or photos on the Desktop — only folders and shortcuts.
@@ -178,3 +182,14 @@ Multiple playback modes are available, including Repeat (default), Juggle (shuff
       ```bash
       pyinstaller --noconfirm --onedir --windowed --name MiyaDesktop --icon assets/miya.ico --add-data "assets;assets" --add-data "demon_runtime;demon_runtime" --collect-submodules core --collect-submodules ui --collect-all PyQt6 main.py
       ```
+---
+* **Credits & Assets**
+
+  * **MiyaDesktop Logo**  
+    * Created on [Design.com](https://www.design.com/)
+
+  * **Music Window GIF**  
+    * Sourced from [Giphy](https://giphy.com/)
+
+  * **Included GIFs**  
+    * All included GIFs (except the custom one) were created by me and are posted on [ArtStation](https://www.artstation.com/artwork/lGmDQV)
